@@ -56,7 +56,7 @@ func (s *SmartContract) deleteMarks(APIstub shim.ChaincodeStubInterface, args []
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	marksAsBytes, _ := APIstub.DeleteState(args[0])
+	return APIstub.DelState(args[0])
 
 }
 
