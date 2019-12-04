@@ -23,11 +23,17 @@ echo 'Getting things ready for Chaincode Invocation..should take only 10 seconds
 
 sleep 10
 
-echo 'Registering Users..'
+echo 'Adding Marks..'
 
-sudo docker exec -it cli peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n mycc -c '{"function":"initLedger","Args":[]}'
+sudo docker exec -it cli peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n mycc -c '{"function":"addMarks","Args":["Alice","67","89","78","92"]}'
+sleep 3
+echo 'getting Marks..'
+sudo docker exec -it cli peer chaincode query -C mychannel -n mycc -c '{"function":"getMarks","Args":["Alice"]}'
 
 sleep 5
+echo 'Deleting Marks..'
+sudo docker exec -it cli peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n mycc -c '{"function":"deleteMarks","Args":["Alice"]}'
+
 # Starting docker logs of chaincode container
 
 sudo docker logs -f dev-peer0.org1.example.com-mycc-1.0
