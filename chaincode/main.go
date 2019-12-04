@@ -1,11 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"strconv"
-
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	sc "github.com/hyperledger/fabric/protos/peer"
 )
@@ -56,8 +53,8 @@ func (s *SmartContract) deleteMarks(APIstub shim.ChaincodeStubInterface, args []
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	return APIstub.DelState(args[0])
-
+   APIstub.DelState(args[0])
+return shim.Success([]byte("Student marks deleted Successfuly"))
 }
 
 
@@ -75,7 +72,7 @@ func (s *SmartContract) addMarks(APIstub shim.ChaincodeStubInterface, args []str
 		return shim.Error(fmt.Sprintf("Failed to record Student Marks: %s", args[0]))
 	}
 
-	return shim.Success(nil)
+	return shim.Success([]byte("Student marks added Successfuly"))
 }
 
 func main() {
