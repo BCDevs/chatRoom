@@ -2,6 +2,12 @@
 const {Contract} = require('fabric-contract-api');
 
 class Chat extends Contract {
+    
+    async init(ctx) {
+
+  console.log("Instantiated Chat chaincode");
+
+        }
 
     async register(ctx,userId,key,name,email,bio) {
        
