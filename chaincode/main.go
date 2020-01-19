@@ -25,8 +25,9 @@ Structure tags are used by encoding/json library
 type Tuna struct {
 	Vessel string `json:"vessel"`
 	Timestamp string `json:"timestamp"`
-	Location  string `json:"location"`
-	Holder  string `json:"holder"`
+	Location string `json:"location"`
+	Holder string `json:"holder"`
+        TxId string `json:"txId"`
 }
 
 /*
@@ -75,7 +76,9 @@ func (s *SmartContract) queryTuna(APIstub shim.ChaincodeStubInterface, args []st
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	tunaAsBytes, _ := APIstub.GetState(args[0])
+	txId := APIstub.GetTxID()
+        bs, _ := json.Marshal(txId)
+        tunaAsBytes, _ := APIstub.GetState(args[0])
 	if tunaAsBytes == nil {
 		return shim.Error("Could not locate tuna")
 	}
@@ -87,17 +90,21 @@ func (s *SmartContract) queryTuna(APIstub shim.ChaincodeStubInterface, args []st
 Will add test data (10 tuna catches)to our network
  */
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
-	tuna := []Tuna{
-		Tuna{Vessel: "923F", Location: "67.0006, -70.5476", Timestamp: "1504054225", Holder: "Miriam"},
-		Tuna{Vessel: "M83T", Location: "91.2395, -49.4594", Timestamp: "1504057825", Holder: "Dave"},
-		Tuna{Vessel: "T012", Location: "58.0148, 59.01391", Timestamp: "1493517025", Holder: "Igor"},
-		Tuna{Vessel: "P490", Location: "-45.0945, 0.7949", Timestamp: "1496105425", Holder: "Amalea"},
-		Tuna{Vessel: "S439", Location: "-107.6043, 19.5003", Timestamp: "1493512301", Holder: "Rafa"},
-		Tuna{Vessel: "J205", Location: "-155.2304, -15.8723", Timestamp: "1494117101", Holder: "Shen"},
-		Tuna{Vessel: "S22L", Location: "103.8842, 22.1277", Timestamp: "1496104301", Holder: "Leila"},
-		Tuna{Vessel: "EI89", Location: "-132.3207, -34.0983", Timestamp: "1485066691", Holder: "Yuan"},
-		Tuna{Vessel: "129R", Location: "153.0054, 12.6429", Timestamp: "1485153091", Holder: "Carlo"},
-		Tuna{Vessel: "49W4", Location: "51.9435, 8.2735", Timestamp: "1487745091", Holder: "Fatima"},
+	txId := APIstub.GetTxID()
+        timestamp, _ := APIstub.GetTxTimestamp()
+	timestampAsInt := timestamp.GetSeconds()
+	timeStamp := time.Unix(timestampAsInt, 0).Format(time.RFC3339)
+         tuna := []Tuna{
+		Tuna{Vessel: "923F", Location: "67.0006, -70.5476", Timestamp:timeStamp , Holder: "Miriam", TxId: txId},
+		Tuna{Vessel: "M83T", Location: "91.2395, -49.4594", Timestamp: timeStamp, Holder: "Dave",TxId:txId },
+		Tuna{Vessel: "T012", Location: "58.0148, 59.01391", Timestamp: timeStamp, Holder: "Igor", TxId:txId},
+		Tuna{Vessel: "P490", Location: "-45.0945, 0.7949", Timestamp: timeStamp, Holder: "Amalea",TxId:txId},
+		Tuna{Vessel: "S439", Location: "-107.6043, 19.5003", Timestamp:timeStamp, Holder: "Rafa",TxId:txId},
+		Tuna{Vessel: "J205", Location: "-155.2304, -15.8723", Timestamp:timeStamp, Holder: "Shen",TxId:txId},
+		Tuna{Vessel: "S22L", Location: "103.8842, 22.1277", Timestamp: timeStamp, Holder: "Leila",TxId:txId},
+		Tuna{Vessel: "EI89", Location: "-132.3207, -34.0983", Timestamp:timeStamp, Holder: "Yuan",TxId:txId},
+		Tuna{Vessel: "129R", Location: "153.0054, 12.6429", Timestamp:timeStamp , Holder: "Carlo",TxId:txId},
+		Tuna{Vessel: "49W4", Location: "51.9435, 8.2735", Timestamp:timeStamp , Holder: "Fatima", TxId:txId},
 	}
 
 	i := 0
