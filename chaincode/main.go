@@ -76,9 +76,7 @@ func (s *SmartContract) queryTuna(APIstub shim.ChaincodeStubInterface, args []st
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
-	txId := APIstub.GetTxID()
-        bs, _ := json.Marshal(txId)
-        tunaAsBytes, _ := APIstub.GetState(args[0])
+	tunaAsBytes, _ := APIstub.GetState(args[0])
 	if tunaAsBytes == nil {
 		return shim.Error("Could not locate tuna")
 	}
